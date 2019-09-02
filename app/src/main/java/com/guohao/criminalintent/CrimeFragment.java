@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -23,11 +24,22 @@ public class CrimeFragment extends Fragment {
     private CheckBox mSolvedCheckBox;
     public static final String EXTRA_CRIME_ID="com.guohao.criminalintent.crime_id";
 
+    private static final String DIALOG_DATE="date";
+
+    public static CrimeFragment newInstance(UUID crimeId){
+        Bundle args=new Bundle();
+        args.putSerializable(EXTRA_CRIME_ID,crimeId);
+
+        CrimeFragment fragment=new CrimeFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        UUID crimeId=(UUID)getActivity().getIntent()
-                .getSerializableExtra(EXTRA_CRIME_ID);
+
+        UUID crimeId=(UUID)getArguments().getSerializable(EXTRA_CRIME_ID);
         mCrime=CrimeLab.get(getActivity()).getCrime(crimeId);
     }
 
@@ -57,7 +69,14 @@ public class CrimeFragment extends Fragment {
 
         mDataButton=(Button)v.findViewById(R.id.crime_data);
         mDataButton.setText(mCrime.getDate().toString());
-        mDataButton.setEnabled(false);
+        mDataButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fm=getActivity().getSupportFragmentManager();
+                DatePickerFragment dialog=DatePickerFragment.newInstance(mCrime.getDate());
+                dialog.show(fm,DIALOG_DATE);
+            }
+        });
 
         mSolvedCheckBox=(CheckBox)v.findViewById(R.id.crime_solved);
         mSolvedCheckBox.setChecked(mCrime.isSolved());
