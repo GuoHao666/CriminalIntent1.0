@@ -14,6 +14,7 @@ public class Crime {
         Id=UUID.randomUUID();
         Date=new Date();
     }
+
     @Override
     public String toString(){
         return Title;
