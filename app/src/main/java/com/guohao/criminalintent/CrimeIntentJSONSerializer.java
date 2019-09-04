@@ -25,9 +25,12 @@ public class CrimeIntentJSONSerializer {
     }
 
     public void saveCrimes(ArrayList<Crime> crimes) throws JSONException, IOException{
+
+
+
         JSONArray array=new JSONArray();
         for (Crime c: crimes){
-            array.put(c);
+            array.put(c.toJSON());
         }
         Writer writer=null;
         try {
